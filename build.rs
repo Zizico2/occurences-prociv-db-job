@@ -26,8 +26,8 @@ async fn main() -> anyhow::Result<()> {
     fs::write(&file_descriptor_path, file_descriptors.encode_to_vec())?;
 
     tonic_build::configure()
-        .build_server(true)
-        .build_client(false)
+        .build_server(false)
+        .build_client(true)
         .file_descriptor_set_path(&file_descriptor_path)
         .skip_protoc_run()
         .compile_protos(PROTO_FILES, &proto_includes)?;
