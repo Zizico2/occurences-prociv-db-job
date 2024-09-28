@@ -9,6 +9,7 @@ const BUF_SCHEMA_ZIP: &str =
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
+    println!("cargo:rerun-if-changed=migrations");
     let bytes = reqwest::get(BUF_SCHEMA_ZIP).await?.bytes().await?;
 
     let out_dir = PathBuf::from(env::var("OUT_DIR")?);
