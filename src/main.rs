@@ -16,7 +16,7 @@ struct Args {
 async fn main() -> anyhow::Result<()> {
     dotenvy::dotenv().ok();
     let Args {
-        occurrences_service_url,
+        occurrences_service_url: _,
         sentry_dsn,
     } = Args::parse();
     let _guard = sentry::init(sentry::ClientOptions {
