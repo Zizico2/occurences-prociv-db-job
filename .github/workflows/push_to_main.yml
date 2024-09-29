@@ -13,7 +13,7 @@ env:
   POSTGRES_USER: user
   POSTGRES_PASSWORD: password
   POSTGRES_DB: db
-  DATABASE_URL: postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@localhost:5432/$POSTGRES_DB
+  DATABASE_URL: postgres://user:password@localhost:5432/db
 
 jobs:
   test:
