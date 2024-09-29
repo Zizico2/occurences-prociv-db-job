@@ -49,6 +49,7 @@ CREATE TABLE
 CREATE TABLE
     occurrences (
         "id" integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        "location" geography NOT NULL,
         "kind" integer NOT NULL REFERENCES lu_occurrence_kind ("id"),
         "grouped_status" integer NOT NULL REFERENCES lu_grouped_status ("id"),
         "occurrence_status" integer NOT NULL REFERENCES lu_occurrence_status ("id"),
