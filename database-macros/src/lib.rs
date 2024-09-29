@@ -7,7 +7,10 @@ use proc_macro_crate::{crate_name, FoundCrate};
 use quote::quote;
 use syn::punctuated::Pair;
 use syn::spanned::Spanned;
-use syn::{parse::Parse, parse_macro_input, punctuated::Punctuated, Expr, Ident, LitStr, Path, Result, Token};
+use syn::{
+    parse::Parse, parse_macro_input, punctuated::Punctuated, Expr, Ident, LitStr, Path, Result,
+    Token,
+};
 use syn::{parse_quote, ExprLit, Lit};
 use syn::{ExprPath, ItemEnum};
 
@@ -24,7 +27,8 @@ struct LookupTableOpts {
 }
 
 fn import_my_crate() -> TokenStream {
-    let found_crate = crate_name("database-utils").expect("database-utils is present in `Cargo.toml`");
+    let found_crate =
+        crate_name("database-utils").expect("database-utils is present in `Cargo.toml`");
 
     match found_crate {
         FoundCrate::Itself => quote!(crate),
@@ -40,7 +44,8 @@ impl Parse for LookupTableOpts {
         let mut input = Punctuated::<Expr, Token![,]>::parse_terminated(input)?;
         let table_name = input.pop().map(Pair::into_value);
         let table_name = if let Some(Expr::Lit(ExprLit {
-            lit: Lit::Str(lit_str), ..
+            lit: Lit::Str(lit_str),
+            ..
         })) = table_name
         {
             lit_str
@@ -74,7 +79,10 @@ impl Parse for LookupTableOpts {
 /// }
 /// ```
 #[proc_macro_attribute]
-pub fn lookup_table(attr: proc_macro::TokenStream, item: proc_macro::TokenStream) -> proc_macro::TokenStream {
+pub fn lookup_table(
+    attr: proc_macro::TokenStream,
+    item: proc_macro::TokenStream,
+) -> proc_macro::TokenStream {
     let mut item = parse_macro_input!(item as ItemEnum);
     let attr = TokenStream::from(attr);
     let ident = &item.ident;
@@ -152,7 +160,8 @@ pub fn lookup_table(attr: proc_macro::TokenStream, item: proc_macro::TokenStream
 #[proc_macro_derive(LookupTable, attributes(lookup_table))]
 pub fn lookup_table_derive(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let input = parse_macro_input!(input);
-    let LookupTableDeriveOpts { ident, table_name } = FromDeriveInput::from_derive_input(&input).expect("Wrong options");
+    let LookupTableDeriveOpts { ident, table_name } =
+        FromDeriveInput::from_derive_input(&input).expect("Wrong options");
     let my_crate = import_my_crate();
 
     let output = quote! {

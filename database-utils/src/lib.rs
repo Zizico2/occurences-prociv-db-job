@@ -33,14 +33,28 @@ pub trait LookupTable<'a, Database: sqlx::Database>:
     + 'a
 {
     const TABLE_NAME: &'static str;
-    fn fetch_all_records(
-    ) -> Map<'a, Database, impl FnMut(Database::Row) -> sqlx::Result<LookupRecord> + Send, impl IntoArguments<'a, Database>>;
+    fn fetch_all_records() -> Map<
+        'a,
+        Database,
+        impl FnMut(Database::Row) -> sqlx::Result<LookupRecord> + Send,
+        impl IntoArguments<'a, Database>,
+    >;
     fn fetch_record_by_id(
         id: i32,
-    ) -> Map<'a, Database, impl FnMut(Database::Row) -> sqlx::Result<LookupRecord> + Send, impl IntoArguments<'a, Database>>;
+    ) -> Map<
+        'a,
+        Database,
+        impl FnMut(Database::Row) -> sqlx::Result<LookupRecord> + Send,
+        impl IntoArguments<'a, Database>,
+    >;
     fn fetch_record_by_value(
         value: &str,
-    ) -> Map<'a, Database, impl FnMut(Database::Row) -> sqlx::Result<LookupRecord> + Send, impl IntoArguments<'a, Database>>;
+    ) -> Map<
+        'a,
+        Database,
+        impl FnMut(Database::Row) -> sqlx::Result<LookupRecord> + Send,
+        impl IntoArguments<'a, Database>,
+    >;
 }
 
 pub use database_macros::*;
