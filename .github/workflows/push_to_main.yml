@@ -39,7 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions-rust-lang/setup-rust-toolchain@v1
-      - run: cargo clippy --all-targets --all-features
+      - run: cargo clippy --workspace --tests --all-targets --all-features
 
   sqlx_prepare_check:
     name: cargo sqlx prepare
@@ -53,6 +53,6 @@ jobs:
       - run: cargo sqlx migrate run
         env:  
           DATABASE_URL: postgres://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@localhost:${{ env.POSTGRES_PORT }}/${{ env.POSTGRES_DB }}
-      - run: cargo sqlx prepare --check
+      - run: cargo sqlx prepare --workspace --check -- --all-targets --all-features
         env:  
           DATABASE_URL: postgres://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@localhost:${{ env.POSTGRES_PORT }}/${{ env.POSTGRES_DB }}

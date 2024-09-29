@@ -4,10 +4,7 @@ use sqlx::migrate::Migrator;
 use testcontainers::core::{ContainerPort, WaitFor};
 use testcontainers::GenericImage;
 use testcontainers_modules::testcontainers::ImageExt;
-use testcontainers_modules::{
-    postgres::Postgres,
-    testcontainers::{runners::AsyncRunner, ContainerAsync},
-};
+use testcontainers_modules::testcontainers::{runners::AsyncRunner, ContainerAsync};
 
 static MIGRATOR: Migrator = sqlx::migrate!("../migrations");
 
