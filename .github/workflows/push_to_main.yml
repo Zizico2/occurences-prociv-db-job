@@ -49,6 +49,6 @@ jobs:
       - uses: actions-rust-lang/setup-rust-toolchain@v1
       - run: cargo install sqlx-cli --no-default-features --features rustls,postgres
       # TODO: should use neon branch
-      - run: docker run -d -p 5432:5432 -e POSTGRES_USER=$POSTGRES_USER -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD -e POSTGRES_DB=&POSTGRES_DB postgis/postgis:latest
+      - run: docker run -d -p 5432:5432 -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password -e POSTGRES_DB=db postgis/postgis:latest
       - run: cargo sqlx migrate run
       - run: cargo sqlx prepare --check
