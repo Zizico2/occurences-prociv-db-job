@@ -1,5 +1,86 @@
 use database_utils::lookup_table;
 
+#[lookup_table(table_name = "lu_occurrence_status")]
+pub enum OccurrenceStatus {
+    FirstDispatch,  // 'first_dispatch'
+    Dispatching,    // 'dispatching'
+    SiteArrival,    // 'site_arrival'
+    Active,         // 'active'
+    Resolving,      // 'resolving'
+    Concluding,     // 'concluding'
+    Monitoring,     // 'monitoring'
+}
+
+#[lookup_table(table_name = "lu_grouped_status")]
+pub enum GroupedStatus {
+    Dispatching,   // 'dispatching'
+    Active,        // 'active'
+    Resolving,     // 'resolving'
+    Concluding,    // 'concluding'
+}
+
+#[lookup_table(table_name = "lu_csrepc")]
+pub enum Csrepc {
+    C1,  // 'Alto Minho'
+    C2,  // 'Alto Tâmega e Barroso'
+    C3,  // 'Área Metropolitana do Porto'
+    C4,  // 'Ave'
+    C5,  // 'Cávado'
+    C6,  // 'Douro'
+    C7,  // 'Tâmega e Sousa'
+    C8,  // 'Terras de Trás-os-Montes'
+    C9,  // 'Beira Baixa'
+    C10, // 'Beiras e Serra da Estrela'
+    C11, // 'Região de Aveiro'
+    C12, // 'Região de Coimbra'
+    C13, // 'Região de Leiria'
+    C14, // 'Viseu Dão Lafões'
+    C15, // 'Grande Lisboa'
+    C16, // 'Península de Setúbal'
+    C17, // 'Lezíria do Tejo'
+    C18, // 'Médio Tejo'
+    C19, // 'Oeste'
+    C20, // 'Alentejo Central'
+    C21, // 'Alentejo Litoral'
+    C22, // 'Alto Alentejo'
+    C23, // 'Baixo Alentejo'
+    C24, // 'Algarve'
+}
+
+#[lookup_table(table_name = "lu_crepc")]
+pub enum Crepc {
+    C1, // 'Norte'
+    C2, // 'Centro'
+    C3, // 'Lisboa e Vale do Tejo'
+    C4, // 'Algarve'
+    C5, // 'Alentejo'
+}
+
+#[lookup_table(table_name = "lu_occurrence_kind")]
+pub enum OccurrenceKindFamily {
+    C1, // 'Riscos Naturais'
+    C2, // 'Riscos Tecnológicos'
+    C3, // 'Riscos Mistos'
+    C4, // 'Proteção e assistência e pessoas e bens'
+    C9, // 'Operações e estados de alerta'
+}
+
+#[lookup_table(table_name = "lu_occurrence_kind_c")]
+pub enum OccurrenceKindGroup {
+    C11, // 'Fenómenos Naturais'
+    C21, // 'Indêndios urbanos ou em área urbanizável'
+    C22, // 'Indêndios em equipamentos e produtos'
+    C23, // 'Indêndios em transportes'
+    C24, // 'Acidentes'
+    C25, // 'Acidentes industriais e tecnológicos'
+    C31, // 'Incêndios rurais'
+    C33, // 'Comprometimento total ou parcial de segurança, serviços ou estruturas'
+    C41, // 'Assistência em saúde'
+    C42, // 'Intervenção em conflitos legais'
+    C43, // 'Assistência e prevenção a atividades humanas'
+    C91, // 'Operações'
+}
+
 #[lookup_table(table_name = "lu_occurrence_kind_c_c")]
 pub enum OccurrenceKind {
     C1101, // 'Cheia'

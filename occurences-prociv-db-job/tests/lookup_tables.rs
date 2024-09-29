@@ -1,4 +1,7 @@
-use occurences_prociv_db_job::OccurrenceKind;
+use occurences_prociv_db_job::{
+    Crepc, Csrepc, GroupedStatus, OccurrenceKind, OccurrenceKindFamily, OccurrenceKindGroup,
+    OccurrenceStatus,
+};
 use setup::SetupUtils;
 
 use sqlx::query_scalar;
@@ -22,12 +25,20 @@ pub async fn all_tables() {
             "lu_occurrence_kind_c_c" => {
                 lookup_table_test::<OccurrenceKind, _>(table_name, sqlx_pool).await
             }
-            "lu_crepc" => { /*TODO*/ }
-            "lu_csrepc" => { /*TODO*/ }
-            "lu_grouped_status" => { /*TODO*/ }
-            "lu_occurrence_status" => { /*TODO*/ }
-            "lu_occurrence_kind" => { /*TODO*/ }
-            "lu_occurrence_kind_c" => { /*TODO*/ }
+            "lu_occurrence_kind_c" => {
+                lookup_table_test::<OccurrenceKindGroup, _>(table_name, sqlx_pool).await
+            }
+            "lu_crepc" => lookup_table_test::<Crepc, _>(table_name, sqlx_pool).await,
+            "lu_csrepc" => lookup_table_test::<Csrepc, _>(table_name, sqlx_pool).await,
+            "lu_grouped_status" => {
+                lookup_table_test::<GroupedStatus, _>(table_name, sqlx_pool).await
+            }
+            "lu_occurrence_status" => {
+                lookup_table_test::<OccurrenceStatus, _>(table_name, sqlx_pool).await
+            }
+            "lu_occurrence_kind" => {
+                lookup_table_test::<OccurrenceKindFamily, _>(table_name, sqlx_pool).await
+            }
             table_name => {
                 panic!("lookup table not covered: {table_name}");
             }
