@@ -13,7 +13,7 @@ env:
   POSTGRES_USER: user
   POSTGRES_PASSWORD: password
   POSTGRES_DB: db
-  DATABASE_URL: postgres://user:password@localhost:5432/db
+  POSTGRES_PORT: 5432
 
 jobs:
   test:
@@ -49,6 +49,10 @@ jobs:
       - uses: actions-rust-lang/setup-rust-toolchain@v1
       - run: cargo install sqlx-cli --no-default-features --features rustls,postgres
       # TODO: should use neon branch
-      - run: docker run -d -p 5432:5432 -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password -e POSTGRES_DB=db postgis/postgis:latest
+      - run: docker run -d -p ${{ env.POSTGRES_PORT }}:${{ env.POSTGRES_PORT }} -e POSTGRES_USER=${{ env.POSTGRES_USER }} -e POSTGRES_PASSWORD=${{ env.POSTGRES_PASSWORD }} -e POSTGRES_DB=${{ env.POSTGRES_DB }} postgis/postgis:latest
       - run: cargo sqlx migrate run
+        env:  
+          DATABASE_URL: postgres://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@localhost:${{ env.POSTGRES_PORT }}/${{ env.POSTGRES_DB }}
       - run: cargo sqlx prepare --check
+        env:  
+          DATABASE_URL: postgres://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@localhost:${{ env.POSTGRES_PORT }}/${{ env.POSTGRES_DB }}
