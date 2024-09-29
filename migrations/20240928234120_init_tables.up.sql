@@ -34,16 +34,41 @@ VALUES
     (5, 'C5', 'Alentejo');
 
 CREATE TABLE
-    lu_csrepc ("id" integer PRIMARY KEY, "pt" varchar NOT NULL);
+    lu_csrepc (
+        "id" integer PRIMARY KEY,
+        "value" varchar NOT NULL UNIQUE,
+        "pt" varchar NOT NULL,
+        UNIQUE ("id", "value")
+    );
 
--- INSERT INTO
---     lu_csrepc ("id", "pt")
--- VALUES
---     (1, 'Norte'),
---     (2, 'Centro'),
---     (3, 'Lisboa e Vale do Tejo'),
---     (4, 'Algarve'),
---     (5, 'Alentejo');
+INSERT INTO
+    lu_csrepc ("id", "value", "pt")
+VALUES
+    (1, 'C1', 'Alto Minho'),
+    (2, 'C2', 'Alto Tâmega e Barroso'),
+    (3, 'C3', 'Área Metropolitana do Porto'),
+    (4, 'C4', 'Ave'),
+    (5, 'C5', 'Cávado'),
+    (6, 'C6', 'Douro'),
+    (7, 'C7', 'Tâmega e Sousa'),
+    (8, 'C8', 'Terras de Trás-os-Montes'),
+    (9, 'C9', 'Beira Baixa'),
+    (10, 'C10', 'Beiras e Serra da Estrela'),
+    (11, 'C11', 'Região de Aveiro'),
+    (12, 'C12', 'Região de Coimbra'),
+    (13, 'C13', 'Região de Leiria'),
+    (14, 'C14', 'Viseu Dão Lafões'),
+    (15, 'C15', 'Grande Lisboa'),
+    (16, 'C16', 'Península de Setúbal'),
+    (17, 'C17', 'Lezíria do Tejo'),
+    (18, 'C18', 'Médio Tejo'),
+    (19, 'C19', 'Oeste'),
+    (20, 'C20', 'Alentejo Central'),
+    (21, 'C21', 'Alentejo Litoral'),
+    (22, 'C22', 'Alto Alentejo'),
+    (23, 'C23', 'Baixo Alentejo'),
+    (24, 'C24', 'Algarve');
+
 CREATE TABLE
     lu_occurrence_kind (
         "id" integer PRIMARY KEY,
