@@ -13,7 +13,7 @@ pub struct NoVariantFori32(pub i32);
 /// Lookup record. Represents the row of a lookup table
 #[derive(Debug)]
 pub struct LookupRecord {
-    pub sid: i32,
+    pub id: i32,
     pub value: String,
 }
 
@@ -35,8 +35,8 @@ pub trait LookupTable<'a, Database: sqlx::Database>:
     const TABLE_NAME: &'static str;
     fn fetch_all_records(
     ) -> Map<'a, Database, impl FnMut(Database::Row) -> sqlx::Result<LookupRecord> + Send, impl IntoArguments<'a, Database>>;
-    fn fetch_record_by_sid(
-        sid: i32,
+    fn fetch_record_by_id(
+        id: i32,
     ) -> Map<'a, Database, impl FnMut(Database::Row) -> sqlx::Result<LookupRecord> + Send, impl IntoArguments<'a, Database>>;
     fn fetch_record_by_value(
         value: &str,

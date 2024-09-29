@@ -1,4 +1,7 @@
-enum OccurrenceKind {
+use database_utils::lookup_table;
+
+#[lookup_table(table_name = "lu_occurrence_kind_c_c")]
+pub enum OccurrenceKind {
     C1101, // 'Cheia'
     C1103, // 'Ventos fortes'
     C1105, // 'Sismo'

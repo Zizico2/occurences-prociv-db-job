@@ -176,9 +176,9 @@ pub fn impl_lookup_table(input: proc_macro::TokenStream) -> proc_macro::TokenStr
     let LookupTableOpts { path, table_name } = parse_macro_input!(input as LookupTableOpts);
     let table_name = table_name.value();
 
-    let fetch_all = format!(r#"SELECT "sid", "value" FROM {table_name};"#);
-    let fetch_by_id = format!(r#"SELECT "sid", "value" FROM {table_name} WHERE "sid" = $1;"#);
-    let fetch_by_value = format!(r#"SELECT "sid", "value" FROM {table_name} WHERE "value" = $1;"#);
+    let fetch_all = format!(r#"SELECT "id", "value" FROM {table_name};"#);
+    let fetch_by_id = format!(r#"SELECT "id", "value" FROM {table_name} WHERE "id" = $1;"#);
+    let fetch_by_value = format!(r#"SELECT "id", "value" FROM {table_name} WHERE "value" = $1;"#);
 
     let my_crate = import_my_crate();
     let sqlx_driver = quote!(::sqlx::Postgres);
@@ -195,15 +195,15 @@ pub fn impl_lookup_table(input: proc_macro::TokenStream) -> proc_macro::TokenStr
                 ::sqlx::query_as!(#my_crate::LookupRecord, #fetch_all)
             }
 
-            fn fetch_record_by_sid(
-                sid: ::std::primitive::i32,
+            fn fetch_record_by_id(
+                id: ::std::primitive::i32,
             ) -> ::sqlx::query::Map<
                 'a,
                 #sqlx_driver,
                 impl ::core::ops::FnMut(#sqlx_driver_as_database::Row) -> ::std::result::Result<#my_crate::LookupRecord, ::sqlx::Error>,
                 #sqlx_driver_as_database::Arguments<'a>,
             > {
-                ::sqlx::query_as!(#my_crate::LookupRecord, #fetch_by_id, sid)
+                ::sqlx::query_as!(#my_crate::LookupRecord, #fetch_by_id, id)
             }
 
             fn fetch_record_by_value(
