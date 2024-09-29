@@ -14,7 +14,21 @@ VALUES
     (4, 'concluding', 'em conclusão');
 
 CREATE TABLE
-    lu_occurrence_status ("id" integer PRIMARY KEY, "pt" varchar NOT NULL);
+    lu_occurrence_status (
+        "id" integer PRIMARY KEY,
+        "value" varchar NOT NULL
+    );
+
+INSERT INTO
+    lu_occurrence_status ("id", "value")
+VALUES
+    (1, 'first_dispatch'),
+    (2, 'dispatching'),
+    (3, 'site_arrival'),
+    (4, 'active'),
+    (5, 'resolving'),
+    (6, 'concluding'),
+    (7, 'monitoring');
 
 CREATE TABLE
     lu_crepc (
@@ -27,11 +41,11 @@ CREATE TABLE
 INSERT INTO
     lu_crepc ("id", "value", "pt")
 VALUES
-    (1, 'C1', 'Norte'),
-    (2, 'C2', 'Centro'),
-    (3, 'C3', 'Lisboa e Vale do Tejo'),
-    (4, 'C4', 'Algarve'),
-    (5, 'C5', 'Alentejo');
+    (1, 'c1', 'Norte'),
+    (2, 'c2', 'Centro'),
+    (3, 'c3', 'Lisboa e Vale do Tejo'),
+    (4, 'c4', 'Algarve'),
+    (5, 'c5', 'Alentejo');
 
 CREATE TABLE
     lu_csrepc (
