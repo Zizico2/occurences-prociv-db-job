@@ -2,6 +2,7 @@ use std::str::FromStr;
 
 use clap::Parser;
 use sentry::types::Dsn;
+use sqlx::query_as;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 #[derive(Debug, clap::Parser)]
@@ -28,5 +29,17 @@ async fn main() -> anyhow::Result<()> {
         .with(tracing_subscriber::fmt::layer())
         .with(sentry_tracing::layer())
         .try_init()?;
+
+    struct Occurrence {
+        __id: i32,
+    }
+    let _occurrences = query_as!(
+        Occurrence,
+        r#"
+        SELECT id as "__id"
+        FROM occurrences;
+        "#
+    );
+
     Ok(())
 }

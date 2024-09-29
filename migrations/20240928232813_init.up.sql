@@ -1,1 +1,3 @@
--- Add up migration script here
+CREATE EXTENSION IF NOT EXISTS postgis;
+CREATE EXTENSION IF NOT EXISTS citext;
+-- CREATE EXTENSION IF NOT EXISTS pgtap;
