@@ -9,6 +9,7 @@ on:
 
 env:
   RUSTFLAGS: "-Dwarnings"
+  SQLX_OFFLINE: 1
   # TODO: shouldn't need these env vars. should use neon branch
   POSTGRES_USER: user
   POSTGRES_PASSWORD: password
@@ -51,8 +52,8 @@ jobs:
       # TODO: should use neon branch
       - run: docker run -d -p ${{ env.POSTGRES_PORT }}:${{ env.POSTGRES_PORT }} -e POSTGRES_USER=${{ env.POSTGRES_USER }} -e POSTGRES_PASSWORD=${{ env.POSTGRES_PASSWORD }} -e POSTGRES_DB=${{ env.POSTGRES_DB }} postgis/postgis:latest
       - run: cargo sqlx migrate run
-        env:  
+        env:
           DATABASE_URL: postgres://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@localhost:${{ env.POSTGRES_PORT }}/${{ env.POSTGRES_DB }}
       - run: cargo sqlx prepare --workspace --check -- --all-targets --all-features
-        env:  
+        env:
           DATABASE_URL: postgres://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@localhost:${{ env.POSTGRES_PORT }}/${{ env.POSTGRES_DB }}
