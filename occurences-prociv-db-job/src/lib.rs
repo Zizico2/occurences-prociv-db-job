@@ -2,21 +2,21 @@ use database_utils::lookup_table;
 
 #[lookup_table(table_name = "lu_occurrence_status")]
 pub enum OccurrenceStatus {
-    FirstDispatch,  // 'first_dispatch'
-    Dispatching,    // 'dispatching'
-    SiteArrival,    // 'site_arrival'
-    Active,         // 'active'
-    Resolving,      // 'resolving'
-    Concluding,     // 'concluding'
-    Monitoring,     // 'monitoring'
+    FirstDispatch, // 'first_dispatch'
+    Dispatching,   // 'dispatching'
+    SiteArrival,   // 'site_arrival'
+    Active,        // 'active'
+    Resolving,     // 'resolving'
+    Concluding,    // 'concluding'
+    Monitoring,    // 'monitoring'
 }
 
 #[lookup_table(table_name = "lu_grouped_status")]
 pub enum GroupedStatus {
-    Dispatching,   // 'dispatching'
-    Active,        // 'active'
-    Resolving,     // 'resolving'
-    Concluding,    // 'concluding'
+    Dispatching, // 'dispatching'
+    Active,      // 'active'
+    Resolving,   // 'resolving'
+    Concluding,  // 'concluding'
 }
 
 #[lookup_table(table_name = "lu_csrepc")]
