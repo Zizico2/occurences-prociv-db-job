@@ -2,11 +2,11 @@ use std::str::FromStr;
 
 use clap::Parser;
 use futures::StreamExt;
+use geozero::wkb::Encode;
 use occurences_prociv_db_job::occurrences::occurrence::v1::occurrences_service_client::OccurrencesServiceClient;
 use occurences_prociv_db_job::occurrences::occurrence::v1::ListOccurrencesRequest;
-use geozero::wkb::Encode;
 use sentry::types::Dsn;
-use sqlx::{query, PgPool};
+use sqlx::{query, query_scalar, PgPool};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 #[derive(Debug, clap::Parser)]
@@ -48,7 +48,6 @@ async fn main() -> anyhow::Result<()> {
         .into_inner();
 
     while let Some(response) = response.next().await {
-        tracing::info!("hsdasaasi");
         let response = match response {
             Ok(response) => response,
             Err(err) => {
@@ -70,6 +69,35 @@ async fn main() -> anyhow::Result<()> {
                 continue;
             }
         };
+
+        let exists = query_scalar!(
+            r#"
+                SELECT EXISTS (
+                    SELECT 1
+                    FROM occurrences
+                    WHERE "anepc_id" = $1 AND "data_generated_at" = $2
+                ) AS "exists!: _";
+            "#,
+            occurrence.anepc_id as _,
+            occurrence.data_generated_at,
+        )
+        .fetch_one(&sqlx_pool)
+        .await;
+        let exists = match exists {
+            Ok(exists) => exists,
+            Err(err) => {
+                tracing::error!("error checking occurrence existence: {err}");
+                continue;
+            }
+        };
+        if exists {
+            tracing::trace!(
+                "repeated data: {} at {}",
+                occurrence.anepc_id,
+                occurrence.data_generated_at
+            );
+            continue;
+        }
 
         query!(
             r#"

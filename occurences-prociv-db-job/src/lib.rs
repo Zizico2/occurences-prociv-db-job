@@ -1,4 +1,5 @@
 use chrono::Utc;
+use derive_more::Display;
 use lookup_tables::{Crepc, Csrepc, GroupedStatus, OccurrenceKind, OccurrenceStatus};
 
 pub mod lookup_tables;
@@ -24,6 +25,6 @@ pub struct InsertOccurrence {
 #[sqlx(transparent)]
 pub struct OccurrenceId(pub i32);
 
-#[derive(Debug, sqlx::Type, Clone)]
+#[derive(Debug, sqlx::Type, Clone, Display)]
 #[sqlx(transparent)]
 pub struct AnepcId(pub String);

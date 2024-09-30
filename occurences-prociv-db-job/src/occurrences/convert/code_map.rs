@@ -1,9 +1,8 @@
-use crate::{occurrences::*, lookup_tables::OccurrenceKind};
 use super::ConversionError;
+use crate::{lookup_tables::OccurrenceKind, occurrences::*};
 use macros::code_consts;
 
 code_consts!();
-
 
 impl TryFrom<occurrence::v1::Kind> for OccurrenceKind {
     type Error = ConversionError;

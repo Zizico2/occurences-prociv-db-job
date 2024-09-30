@@ -1760,6 +1760,7 @@ dependencies = [
  "chrono",
  "clap",
  "database-utils",
+ "derive_more",
  "dotenvy",
  "futures",
  "geo-types",

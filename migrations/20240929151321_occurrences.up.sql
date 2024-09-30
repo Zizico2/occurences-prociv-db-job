@@ -13,5 +13,6 @@ CREATE TABLE
         "number_of_water_means" integer NOT NULL,
         "number_of_air_means" integer NOT NULL,
         "start_date" timestamptz NOT NULL,
-        "data_generated_at" timestamptz NOT NULL
+        "data_generated_at" timestamptz NOT NULL,
+        UNIQUE ("anepc_id", "data_generated_at")
     );
