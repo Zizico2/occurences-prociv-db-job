@@ -2,12 +2,12 @@ use std::str::FromStr;
 
 use clap::Parser;
 use futures::StreamExt;
+use occurences_prociv_db_job::occurrences::occurrence::v1::occurrences_service_client::OccurrencesServiceClient;
+use occurences_prociv_db_job::occurrences::occurrence::v1::ListOccurrencesRequest;
 use geozero::wkb::Encode;
 use sentry::types::Dsn;
-use sqlx::{query,  PgPool};
+use sqlx::{query, PgPool};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
-use occurences_prociv_db_job::occurrences::portugal_reimagined::occurrences_service::v1::my_occurrences_service_client::MyOccurrencesServiceClient;
-use occurences_prociv_db_job::occurrences::portugal_reimagined::occurrences_service::v1::ListOccurrencesRequest;
 
 #[derive(Debug, clap::Parser)]
 struct Args {
@@ -40,7 +40,7 @@ async fn main() -> anyhow::Result<()> {
 
     let sqlx_pool: sqlx::Pool<sqlx::Postgres> = PgPool::connect(&connection_string).await.unwrap();
 
-    let mut client = MyOccurrencesServiceClient::connect(occurrences_service_url).await?;
+    let mut client = OccurrencesServiceClient::connect(occurrences_service_url).await?;
 
     let mut response = client
         .list_occurrences(ListOccurrencesRequest {})
@@ -48,6 +48,7 @@ async fn main() -> anyhow::Result<()> {
         .into_inner();
 
     while let Some(response) = response.next().await {
+        tracing::info!("hsdasaasi");
         let response = match response {
             Ok(response) => response,
             Err(err) => {

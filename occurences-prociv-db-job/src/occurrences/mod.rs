@@ -3,13 +3,13 @@ pub mod foundation {
         tonic::include_proto!("foundation.v1");
     }
 }
-pub mod portugal_reimagined {
-    pub mod occurrences_service {
-        pub mod v1 {
-            tonic::include_proto!("portugal_reimagined.occurrences_service.v1");
-        }
-    }
-}
+// pub mod portugal_reimagined {
+//     pub mod occurrences_service {
+//         pub mod v1 {
+//             tonic::include_proto!("portugal_reimagined.occurrences_service.v1");
+//         }
+//     }
+// }
 pub mod spatial_planning {
     pub mod v1 {
         tonic::include_proto!("spatial_planning.v1");

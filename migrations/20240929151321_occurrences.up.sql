@@ -2,7 +2,7 @@ CREATE TABLE
     occurrences (
         "id" integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
         "location" geography NOT NULL,
-        "kind" integer NOT NULL REFERENCES lu_occurrence_kind ("id"),
+        "kind" integer NOT NULL REFERENCES lu_occurrence_kind_c_c ("id"),
         "grouped_status" integer NOT NULL REFERENCES lu_grouped_status ("id"),
         "occurrence_status" integer NOT NULL REFERENCES lu_occurrence_status ("id"),
         "crepc" integer NOT NULL REFERENCES lu_crepc ("id"),
