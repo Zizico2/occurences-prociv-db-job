@@ -5,7 +5,6 @@ use lookup_tables::{Crepc, Csrepc, GroupedStatus, OccurrenceKind, OccurrenceStat
 pub mod lookup_tables;
 pub mod occurrences;
 
-
 #[derive(Debug)]
 pub struct InsertOccurrence {
     pub location: geo_types::Geometry<f64>,
