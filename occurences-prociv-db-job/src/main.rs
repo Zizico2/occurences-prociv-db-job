@@ -1,7 +1,3 @@
-use std::ops::DerefMut;
-use std::str::FromStr;
-
-use anyhow::bail;
 use clap::Parser;
 use futures::StreamExt;
 use geozero::wkb::Encode;
@@ -10,9 +6,11 @@ use occurences_prociv_db_job::occurrences::occurrence::v1::ListOccurrencesReques
 use occurences_prociv_db_job::occurrences::occurrence::v1::{
     occurrences_service_client::OccurrencesServiceClient, ListOccurrencesResponse,
 };
-use occurences_prociv_db_job::{AnepcId, InsertOccurrence};
+use occurences_prociv_db_job::InsertOccurrence;
 use sentry::types::Dsn;
 use sqlx::{query, query_scalar, PgPool, Postgres, Transaction};
+use std::ops::DerefMut;
+use std::str::FromStr;
 use tokio::task::JoinSet;
 use tonic::Status;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
@@ -55,28 +53,33 @@ async fn main() -> anyhow::Result<()> {
         .await?
         .into_inner();
 
-    let mut join_set: JoinSet<anyhow::Result<()>> = JoinSet::new();
+    let mut join_set: JoinSet<Result<(), JobError>> = JoinSet::new();
 
     while let Some(response) = response.next().await {
         let sqlx_pool = sqlx_pool.clone();
         join_set.spawn(async move {
             let mut tx = sqlx_pool.begin().await?;
-            process_response(&mut tx, response).await.inspect_err(|err| {
-                match &err {
-                    JobError::RepeatedOccurrence { .. } => todo!(),
-                    JobError::DatabaseError(_) => todo!(),
-                    JobError::GrpcError(_) => todo!(),
-                    JobError::ConversionError(_) => todo!(),
-                    JobError::UnpopulatedOccurrence => todo!(),
-                }
-            })?;
+            process_response(&mut tx, response).await?;
             tx.commit().await?;
             Ok(())
         });
     }
-    while let Some(response) = response.next().await {
+    while let Some(response) = join_set.join_next().await {
+        let response = match response {
+            Ok(response) => response,
+            Err(err) => {
+                tracing::error!("{err}");
+                continue;
+            }
+        };
         if let Err(err) = response {
-            tracing::error!("{err}");
+            match err {
+                JobError::RepeatedOccurrence { .. } => tracing::trace!("{err}"),
+                JobError::ConversionError(_)
+                | JobError::DatabaseError(_)
+                | JobError::GrpcError(_) => tracing::error!("{err}"),
+                JobError::UnpopulatedOccurrence => tracing::warn!("{err}"),
+            }
         }
     }
 
