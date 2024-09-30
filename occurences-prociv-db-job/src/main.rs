@@ -24,7 +24,7 @@ struct Args {
 async fn main() -> anyhow::Result<()> {
     dotenvy::dotenv().ok();
     let Args {
-        occurrences_service_url: _,
+        occurrences_service_url,
         sentry_dsn,
         connection_string,
     } = Args::parse();
@@ -40,7 +40,7 @@ async fn main() -> anyhow::Result<()> {
 
     let sqlx_pool: sqlx::Pool<sqlx::Postgres> = PgPool::connect(&connection_string).await.unwrap();
 
-    let mut client = MyOccurrencesServiceClient::connect("http://[::1]:50051").await?;
+    let mut client = MyOccurrencesServiceClient::connect(occurrences_service_url).await?;
 
     let mut response = client
         .list_occurrences(ListOccurrencesRequest {})
