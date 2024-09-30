@@ -1,7 +1,7 @@
 use protox::prost::Message;
 use std::{env, fs, path::PathBuf};
 
-const PROTO_FILES: &[&str; 1] = &["portugal_reimagined/occurrences_service/v1/occurrences_service.proto"];
+const PROTO_FILES: &[&str; 1] = &["occurrence/v1/occurrences_service.proto"];
 
 //INFO: change this to update version
 const BUF_SCHEMA_ZIP: &str =
