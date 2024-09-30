@@ -5,10 +5,12 @@ use anyhow::bail;
 use clap::Parser;
 use futures::StreamExt;
 use geozero::wkb::Encode;
+use occurences_prociv_db_job::occurrences::convert::ConversionError;
 use occurences_prociv_db_job::occurrences::occurrence::v1::ListOccurrencesRequest;
 use occurences_prociv_db_job::occurrences::occurrence::v1::{
     occurrences_service_client::OccurrencesServiceClient, ListOccurrencesResponse,
 };
+use occurences_prociv_db_job::{AnepcId, InsertOccurrence};
 use sentry::types::Dsn;
 use sqlx::{query, query_scalar, PgPool, Postgres, Transaction};
 use tokio::task::JoinSet;
@@ -59,7 +61,15 @@ async fn main() -> anyhow::Result<()> {
         let sqlx_pool = sqlx_pool.clone();
         join_set.spawn(async move {
             let mut tx = sqlx_pool.begin().await?;
-            process_response(&mut tx, response).await?;
+            process_response(&mut tx, response).await.inspect_err(|err| {
+                match &err {
+                    JobError::RepeatedOccurrence { .. } => todo!(),
+                    JobError::DatabaseError(_) => todo!(),
+                    JobError::GrpcError(_) => todo!(),
+                    JobError::ConversionError(_) => todo!(),
+                    JobError::UnpopulatedOccurrence => todo!(),
+                }
+            })?;
             tx.commit().await?;
             Ok(())
         });
@@ -73,31 +83,29 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
+#[derive(Debug, thiserror::Error)]
+enum JobError {
+    #[error("repeated data: {} at {}", occurrence.anepc_id, occurrence.data_generated_at)]
+    RepeatedOccurrence { occurrence: InsertOccurrence },
+    #[error("database error: {0}")]
+    DatabaseError(#[from] sqlx::Error),
+    #[error("grpc error: {0}")]
+    GrpcError(#[from] tonic::Status),
+    #[error("conversion error: {0}")]
+    ConversionError(#[from] ConversionError),
+    #[error("unpopulated occurrence")]
+    UnpopulatedOccurrence,
+}
+
 async fn process_response(
     tx: &mut Transaction<'_, Postgres>,
     response: Result<ListOccurrencesResponse, Status>,
-) -> anyhow::Result<()> {
-    let response = match response {
-        Ok(response) => response,
-        Err(err) => {
-            tracing::error!("error streaming next: {err}");
-            bail!("TODO");
-        }
-    };
-    let occurrence = if let Some(occurrence) = response.occurrence {
-        occurrence
-    } else {
-        tracing::error!("unpopulated occurrence");
-        bail!("TODO");
-    };
-    let occurrence = occurences_prociv_db_job::InsertOccurrence::try_from(occurrence);
-    let occurrence = match occurrence {
-        Ok(occurrence) => occurrence,
-        Err(err) => {
-            tracing::error!("error converting occurrence to DB model: {err}");
-            bail!("TODO");
-        }
-    };
+) -> Result<(), JobError> {
+    let occurrence = occurences_prociv_db_job::InsertOccurrence::try_from(
+        response?
+            .occurrence
+            .ok_or(JobError::UnpopulatedOccurrence)?,
+    )?;
 
     let exists = query_scalar!(
         r#"
@@ -111,24 +119,13 @@ async fn process_response(
         occurrence.data_generated_at,
     )
     .fetch_one(tx.deref_mut())
-    .await;
-    let exists = match exists {
-        Ok(exists) => exists,
-        Err(err) => {
-            tracing::error!("error checking occurrence existence: {err}");
-            bail!("TODO");
-        }
-    };
+    .await?;
+
     if exists {
-        tracing::trace!(
-            "repeated data: {} at {}",
-            occurrence.anepc_id,
-            occurrence.data_generated_at
-        );
-        bail!("TODO");
+        return Err(JobError::RepeatedOccurrence { occurrence });
     }
 
-    let res = query!(
+    query!(
         r#"
         INSERT INTO occurrences (
             "location",
@@ -163,12 +160,7 @@ async fn process_response(
         occurrence.data_generated_at,
     )
     .execute(tx.deref_mut())
-    .await
-    .inspect_err(|err| tracing::error!("error inserting occurrence: {err}"));
-
-    if let Err(_err) = res {
-        bail!("TODO");
-    }
+    .await?;
 
     Ok(())
 }
