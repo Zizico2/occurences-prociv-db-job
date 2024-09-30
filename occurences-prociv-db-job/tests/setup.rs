@@ -50,8 +50,6 @@ pub async fn setup() -> Setup {
         container_postgres.get_host_port_ipv4(5432).await.unwrap(),
     );
 
-    dbg!(&connection_string);
-
     let sqlx_pool: sqlx::Pool<sqlx::Postgres> = PgPool::connect(&connection_string).await.unwrap();
     MIGRATOR.run(&sqlx_pool).await.unwrap();
 

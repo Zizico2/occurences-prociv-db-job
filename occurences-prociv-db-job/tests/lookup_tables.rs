@@ -1,4 +1,4 @@
-use occurences_prociv_db_job::{
+use occurences_prociv_db_job::lookup_tables::{
     Crepc, Csrepc, GroupedStatus, OccurrenceKind, OccurrenceKindFamily, OccurrenceKindGroup,
     OccurrenceStatus,
 };

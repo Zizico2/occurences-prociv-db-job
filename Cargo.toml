@@ -1,7 +1,8 @@
 [workspace]
 members = [
+  "macros",
   "database-utils",
   "database-macros",
-  "occurences-prociv-db-job"
+  "occurences-prociv-db-job",
 ]
 resolver = "2"
