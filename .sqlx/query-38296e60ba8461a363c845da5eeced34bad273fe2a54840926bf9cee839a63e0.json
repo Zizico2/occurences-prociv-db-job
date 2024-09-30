@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT EXISTS (\n                SELECT 1\n                FROM occurrences\n                WHERE \"anepc_id\" = $1 AND \"data_generated_at\" = $2\n            ) AS \"exists!: _\";\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "exists!: _",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Timestamptz"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "38296e60ba8461a363c845da5eeced34bad273fe2a54840926bf9cee839a63e0"
+}
